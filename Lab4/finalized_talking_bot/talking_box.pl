@@ -7,6 +7,7 @@
 :- dynamic count_high_blood_sugar/1.
 :- dynamic count_cancer/1.
 :- dynamic pain_questions/1.
+:- dynamic mood_questions/1.
 :- dynamic pain/1.
 :- dynamic all_reactions/1.
 :- dynamic symptoms/1.
@@ -151,12 +152,24 @@ confirm_pain(pain_free) :- assert(pain(pain_free)) , add_count_flu.
 
 %----------------------------------------------------------------------------------------------------------
 % Patient's Mood Knowledge
+mood_questions(['Are you feeling calm?','Are you feeling worried?','Are you feeling stressed?','Are you feeling fearful?','Are you feeling panic stricken?']).
+mood_query(X) :- mood_questions([X|T]), takeout(X, [X|T], T), (retractall(mood_questions(_)), assertz(mood_questions(T))), ask_mood_repeat(X). 
 
-mood(calm) :- pain(pain_free).
-mood(worried) :- pain(mild_pain).
-mood(stressed) :- pain(moderate_pain).
-mood(fearful) :- pain(severe_pain).
-mood(panic_stricken) :- pain(overwhelming_pain).
+
+% mood(calm) :- pain(pain_free).
+% mood(worried) :- pain(mild_pain).
+% mood(stressed) :- pain(moderate_pain).
+% mood(fearful) :- pain(severe_pain).
+% mood(panic_stricken) :- pain(overwhelming_pain).
+confirm_mood(calm) :- assert(mood(calm)).
+confirm_mood(worried) :- assert(mood(worried)).
+confirm_mood(stressed) :- assert(mood(stressed)).
+confirm_mood(fearful) :- assert(mood(fearful)).
+confirm_mood(panic_stricken) :- assert(mood(panic_stricken)).
+
+
+
+
 
 %----------------------------------------------------------------------------------------------------------
 %Doctor's Reaction Knowledge
@@ -187,23 +200,34 @@ reaction :- random_reaction(X), print(X), all_reactions(L), select(X, L, T), ret
 
 %----------------------------------------------------------------------------------------------------------
 % (Main Function)
-
 ask(0) :- 
     print('안녕! Hello! Do you feel any pain?'),
     print('y/n: '),
     read(Answer),
     (Answer==y -> pain_query(_);
-    Answer==n -> confirm_pain(pain_free), query_symptoms(_)).
+    Answer==n -> confirm_pain(pain_free), mood_query(_)).
 
 ask_repeat(X) :-
     print(X),
     print('y/n: '),
     read(Answer),
-    (Answer==y -> ((X == 'Do you feel mild pain?') -> (confirm_pain(mild_pain), query_symptoms(_)) ;
-                (X == 'Do you feel moderate pain?') -> (confirm_pain(moderate_pain), query_symptoms(_)) ;
-                (X == 'Do you feel severe pain?') -> (confirm_pain(severe_pain), query_symptoms(_)) ;
-                (X == 'Do you feel overwhelmingly severe pain?') -> (confirm_pain(overwhelming_pain), query_symptoms(_))) ;
+    (Answer==y -> ((X == 'Do you feel mild pain?') -> (confirm_pain(mild_pain), mood_query(_)) ;
+                (X == 'Do you feel moderate pain?') -> (confirm_pain(moderate_pain),mood_query(_)) ;
+                (X == 'Do you feel severe pain?') -> (confirm_pain(severe_pain),mood_query(_)) ;
+                (X == 'Do you feel overwhelmingly severe pain?') -> (confirm_pain(overwhelming_pain),mood_query(_))) ;
     Answer==n -> pain_query(_)).
+
+ask_mood_repeat(X) :-
+    print(X),
+    print('y/n: '),
+    read(Answer),
+    (% query_symptoms(_)
+    Answer==y -> ((X == 'Are you feeling calm?') -> (confirm_mood(calm),query_symptoms(_)) ;
+                (X == 'Are you feeling worried?') -> (confirm_mood(worried),query_symptoms(_)) ;
+                (X == 'Are you feeling stressed?') -> (confirm_mood(stressed),query_symptoms(_)) ;
+                (X == 'Are you feeling fearful?') -> (confirm_mood(fearful),query_symptoms(_)) ;
+                (X == 'Are you feeling panic stricken?') -> (confirm_mood(panic_stricken),query_symptoms(_))) ;
+    Answer==n -> mood_query(_)).
 
 
 %----------------------------------------------------------------------------------------------------------
