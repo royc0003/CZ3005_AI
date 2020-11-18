@@ -50,7 +50,7 @@ allergy([cough, runny_nose, rash, wheeze, sneeze, red_eye]).
 covid_19([fever, tired, cough, rash, wheeze, loss_of_speech]).
 
 /*Symptoms for Heart Disease*/
-heart_disease([tired, no_appetite, leg_swell, chest_pain, breathless]).
+heart_disease([tired,weight_loss, no_appetite, leg_swell, chest_pain, breathless]).
 
 /*Symptoms for High Blood Sugar*/
 high_blood_sugar([infection, weight_loss, pee_frequently, thirst, blur_vision, dry_mouth]).
@@ -156,28 +156,28 @@ mood(calm) :- pain(pain_free).
 mood(worried) :- pain(mild_pain).
 mood(stressed) :- pain(moderate_pain).
 mood(fearful) :- pain(severe_pain).
-mood(suicidal) :- pain(overwhelming_pain).
+mood(panic_stricken) :- pain(overwhelming_pain).
 
 %----------------------------------------------------------------------------------------------------------
 %Doctor's Reaction Knowledge
 
 /*Lists of possible speeches*/
 emoticons(['^_^',':D',':O','^^',':)']).
-filler_words(['Interesting.','Amazing!','Hmm.','That being said.','Um..','Uh..huh..','Fascinating.','Oh I see.']).
+filler_words(['Interesting...','Hmm...','That being said.','Um...','Uh..huh..','Fascinating...','Oh I see...']).
 kidding(['The cost will be 1 million. Just kidding.','How many days of MC do you need? Just kidding.','An apple a day keeps the doctor away. Here is one for u.','Where is my Google? Just kidding.','Do you want lollipop?']).
 knoweldgable(['I have seen this many times.','This is very common.','This is not out of this world.','Why am I not surprised.']).
 companion(['We are in the same boat.','Let us go through this together.','You are not alone.','Let us stand strong together.','Together we can.']).
-comfort(['Like yourself, I have been through this before.','Do not worry.','Do not fear.','I understand.']).
+reassure(['Like yourself, I have been through this before.','Do not worry.','Do not fear.','I understand.']).
 relax(['Take deep breaths.','Cheer up my friend.','Be happy','Be grateful','Stay cheerful','Life is precious']).
-attentive(['My ears are wide open for you.','I am listening.','Your words are equally important to me.','Yes. Continue.']).
-quote(['True beauty is a warm heart, a kind soul, and an attentive ear.','However much you might watch me I should be watching you more.','It is going to be ok in the end. If it is not ok, it is not the end.']).
+attentive(['My ears are wide open for you.','Yes, I am listening please continue.','Your words are equally important to me.','*Looks Attentive*']).
+inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear from me.','However much you might watch me I should be watching you more.','It is going to be ok in the end. If it is not ok, it is not the end.']).
 
 /* Flattens all applicable gesture into a super list L without duplicates */
 all_reactions(L) :- mood(calm), knoweldgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(worried), quote(A), comfort(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(stressed), comfort(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(fearful), comfort(A), relax(B), filler_words(C), knoweldgable(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(suicidal), attentive(A), companion(B), filler_words(C), comfort(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- mood(worried), knoweldgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- mood(fearful), reassure(A), relax(B), filler_words(C), knoweldgable(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
 
 /*Picks a random reaction from a list of reactions*/
 random_reaction(X) :- all_reactions(L), random_member(X,L).
