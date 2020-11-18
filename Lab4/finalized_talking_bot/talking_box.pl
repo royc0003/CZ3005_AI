@@ -308,15 +308,28 @@ merge(bleed) :- (assert(has(bleed)), incr_bleed).
 
 
 %----------------------------------------------------------------------------------------------------------
-% Heuristic to add weights to symptoms
-% We know that symptoms of acne is unique, no need for additional weights.
-% In the scenario where we have 2 disease having the same symptom, then the weight for symptoms unique to that disease should be x2.
-% lump (acne, cancer)
+% Heuristic to add weights to symptoms. This is done to further differentiate diseases with conflicting symptoms.
+%  For instance, both acne and cancer have the same symptom "lump". Which also mean that the symptom "lump" is not unique enough to identify a unique disease.
+% This also means that there's a chance that the counter for count_acne = X might also have the same value as the counter for count_cancer.
+% To resolve this, heavier weights are added to symptoms that tend to have a stronger indicator towards a particular disease.
+% (1) For non-unique symptoms, the increment weight is 1.
+% (2) For diseases with total unique symptoms > 2, the increment weight is 2.
+% (3) For diseases with total unique symptoms <=2, the increment weight is 3.
+% E.g. The unique / stronger indicator for cancer will be "bleed" and "pale_skin" since both symptoms do not overlap with antoher disease
+% And since the total unique symptoms are <=2, the increment_cancer weight for bleed and pale_skin will be 3 respectively.
+
+
+%lump (acne, cancer)
 incr_lump :- (add_count_acne, add_count_cancer).
+%whiteheads x2 :: Acne
 incr_whiteheads :- add_count_acne, add_count_acne.
+%blackheads x2 :: Acne
 incr_blackheads :- add_count_acne, add_count_acne.
+%pus x2 :: Acne
 incr_pus :- add_count_acne, add_count_acne.
+%cyst x2 :: Acne
 incr_cyst :- add_count_acne, add_count_acne.
+%scar x2 :: Acne
 incr_scar :- add_count_acne, add_count_acne.
 
 %cough (flue, allergy, covid-19)
@@ -324,11 +337,11 @@ incr_cough :- (add_count_flu, add_count_allergy, add_count_covid_19).
 
 %runny_nose(flu, allergy)
 incr_runny_nose :- (add_count_flu, add_count_allergy).
-%ache x2
+%ache x2 :: Flu
 incr_ache :- add_count_flu, add_count_flu.
-%weak x2
+%weak x2 :: Flu
 incr_weak :- add_count_flu, add_count_flu.
-%fever x2
+%fever x2 :: Flu
 incr_fever :- add_count_flu, add_count_covid_19.
 %tired(flu, covid-19, cancer, heart disease)
 incr_tired :- (add_count_flu, add_count_covid_19, add_count_cancer, add_count_heart_disease).
@@ -336,31 +349,39 @@ incr_tired :- (add_count_flu, add_count_covid_19, add_count_cancer, add_count_he
 incr_rash :- (add_count_allergy, add_count_covid_19).
 %wheeze (allergy, covid_19)
 incr_wheeze :- (add_count_allergy, add_count_covid_19).
-%sneeze x2
-incr_sneeze :- add_count_allergy, add_count_allergy.
-%red_eye x2
-incr_red_eye :- add_count_allergy, add_count_allergy.
-%loss of speech x2
+%sneeze x3 :: Allergy
+incr_sneeze :- add_count_allergy, add_count_allergy, add_count_allergy.
+%red_eye x3 :: Allergy
+incr_red_eye :- add_count_allergy, add_count_allergy, add_count_allergy.
+%loss of speech x3 :: Covid_19
 incr_loss_of_speech :- add_count_covid_19, add_count_covid_19, add_count_covid_19.
 
-%no_appetite x2
+%no_appetite x2 :: Heart Disease
 incr_no_appetite :- add_count_heart_disease, add_count_heart_disease.
+%leg_swell x2 :: Heart Disease
 incr_leg_swell :- add_count_heart_disease, add_count_heart_disease.
+%chest_pain x2 :: Heart Disease
 incr_chest_pain :- add_count_heart_disease, add_count_heart_disease.
-%breathles (hear disease, cancer)
+%breathless (heart disease, cancer)
 incr_breathless :- (add_count_heart_disease, add_count_cancer).
 
-%high blood sugar (hbs, cancer)
+%infection (high blood sugar, cancer)
 incr_infection:- (add_count_high_blood_sugar, add_count_cancer).
+%weight_loss(high blood sugar, heart disease)
 incr_weight_loss :- (add_count_high_blood_sugar, add_count_heart_disease).
+%pee_frequently x2 :: High Blood Sugar
 incr_pee_frequently :- add_count_high_blood_sugar, add_count_high_blood_sugar.
+%thirst x2 :: High Blood Sugar
 incr_thirst :- add_count_high_blood_sugar, add_count_high_blood_sugar.
+%blur_vision x2 :: High Blood Sugar
 incr_blur_vision :- add_count_high_blood_sugar, add_count_high_blood_sugar.
+%dry_mouth x2 :: High Blood Sugar
 incr_dry_mouth :- add_count_high_blood_sugar, add_count_high_blood_sugar.
 
-%cancer
-incr_pale_skin :- add_count_cancer, add_count_cancer,add_count_cancer,add_count_cancer.
-incr_bleed :- add_count_cancer, add_count_cancer.
+%pale_skin x3 :: Cancer
+incr_pale_skin :- add_count_cancer, add_count_cancer, add_count_cancer.
+%bleed x3 :: Cancer
+incr_bleed :- add_count_cancer, add_count_cancer, add_count_cancer.
 
 
 
@@ -400,7 +421,7 @@ diagnosis :- diagnose(acne) -> print('I diagnose that you have an acne.') ;
              diagnose(allergy) -> print('I diagnose that you have an allergy.') ;
              diagnose(covid_19) -> print('I am sorry but you have COVID-19.') ;
              diagnose(heart_disease) -> print('I apologize but you have heart disease.') ;
-             diagnose(high_blood_sugar) -> print('I diagnose that you have high blood suagar.') ;
+             diagnose(high_blood_sugar) -> print('I diagnose that you have high blood sugar.') ;
              diagnose(cancer) -> print('I regret to inform you that you have cancer.').
 
 
@@ -416,74 +437,3 @@ init_count :-
 :- init_count.
 
 
-/*
-:- dynamic count_acne/1.
-:- dynamic count_flu/1.
-:- dynamic count_allergy/1.
-:- dynamic count_covid_19/1.
-:- dynamic count_heart_disease/1.
-:- dynamic count_high_blood_sugar/1.
-:- dynamic count_cancer /1.
-:- dynamic pain_questions/1.
-:- dynamic pain/1.
-:- dynamic all_reactions/1.
-:- dynamic symptoms/1.
-
-*/
-
-
-
-
-/*
-        lump 
-        whiteheads 
-        blackheads 
-        pus 
-        cyst 
-        scar 
-        cough 
-        runny_nose 
-        ache 
-        weak  
-        tired
-        fever
-        rash 
-        wheeze 
-        sneeze 
-        red_eye 
-        loss_of_speech 
-        no_appetite 
-        leg_swell 
-        chest_pain 
-        weight_loss 
-        pee_frequently
-        thirst 
-        blur_vision
-        infection
-        pale_skin
-        breathless               
-        bruise
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-% % yes(Yes).
-% % ok(Answer):- yes(Yes).
-
-% % ask(0):- print('Are you ok?'),read(Answer), ok(Answer).
-
-% fever([temperature, sweat, ache, headache, tiredness, nausea, chills]).
-
-% askFever(X):- fever(X).
-
-
-% % Note that assert is used to add into database

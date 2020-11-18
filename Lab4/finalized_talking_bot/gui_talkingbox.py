@@ -45,6 +45,7 @@ mood_questions = list(prolog.query("mood_questions(L)"))[0]['L']
 
 
 
+
 # Create the Window
 window = sg.Window('Patient with a Sympathetic Doctor', layout)
 tts = _TTS()
@@ -70,7 +71,6 @@ while True:
         if event == 'Yes':
             state = 1
             sentence = str(pain_questions.pop(0))
-            print("Debugging: "+sentence)
         elif event == 'No':
             state = 5
             list(prolog.query("confirm_pain(pain_free)"))
