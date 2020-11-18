@@ -92,9 +92,6 @@ while True:
                 state = 5
                 list(prolog.query("confirm_pain(mild_pain)"))
                 print("Asserted mild pain")
-                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
                 sentence = str(mood_questions.pop(0))
 
@@ -108,8 +105,6 @@ while True:
                 state = 5
                 list(prolog.query("confirm_pain(moderate_pain)"))
                 print("Asserted moderate pain")
-                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
                 sentence = str(mood_questions.pop(0))
                 
@@ -122,8 +117,6 @@ while True:
                 state = 5
                 list(prolog.query("confirm_pain(severe_pain)"))
                 print("Asserted severe pain")
-                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
                 sentence = str(mood_questions.pop(0))
                 
@@ -135,8 +128,6 @@ while True:
                 state = 5
                 list(prolog.query("confirm_pain(overwhelming_pain)"))
                 print("Asserted overwhelming pain")
-                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
                 sentence = str(mood_questions.pop(0))
             
@@ -145,8 +136,6 @@ while True:
                 list(prolog.query("confirm_pain(pain_free)"))
                 print("Asserted pain free")
                 state = 5
-                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
                 sentence = str(mood_questions.pop(0))
                 
@@ -161,7 +150,6 @@ while True:
                 print("Asserted mood(calm)")
                 all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
                 random.shuffle(all_gestures)
-                #symptom = str(symptoms.pop(0))
                 
                 
             elif event == 'No':
@@ -174,7 +162,6 @@ while True:
                 print("Asserted mood(worried)")
                 all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
                 random.shuffle(all_gestures)
-                #symptom = str(symptoms.pop(0))
                 
              
             elif event == 'No':
@@ -188,7 +175,6 @@ while True:
                 print("Asserted mood(stressed)")
                 all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
                 random.shuffle(all_gestures)
-                #symptom = str(symptoms.pop(0))
                 
              
             elif event == 'No':
@@ -202,7 +188,6 @@ while True:
                 print("Asserted mood(fearful)")
                 all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
                 random.shuffle(all_gestures)
-                #symptom = str(symptoms.pop(0))
                 
              
             elif event == 'No':
@@ -216,7 +201,6 @@ while True:
                 print("Asserted mood(panic_stricken)")
                 all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
                 random.shuffle(all_gestures)
-                #symptom = str(symptoms.pop(0))
                 
              
             elif event == 'No':
@@ -225,7 +209,6 @@ while True:
                 state = 2
                 all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
                 random.shuffle(all_gestures)
-                #symptom = str(symptoms.pop(0))
         
 
     elif state == 2:
