@@ -43,7 +43,6 @@ random.shuffle(symptoms)
 pain_questions = list(prolog.query("pain_questions(L)"))[0]['L']
 mood_questions = list(prolog.query("mood_questions(L)"))[0]['L']
 
-print(str(mood_questions[0]))
 
 
 # Create the Window

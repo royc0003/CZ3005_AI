@@ -144,11 +144,12 @@ pain_query([]) :- (assert(pain(pain_free)), add_count_flu, query_symptoms(_)).
 
 
 /*Confirm pain level and assert*/
+%initial confirmation would increase the bias towards certain disease
 confirm_pain(mild_pain) :- assert(pain(mild_pain)), add_count_acne, add_count_allergy.
 confirm_pain(moderate_pain) :- assert(pain(moderate_pain)), add_count_high_blood_sugar, add_count_covid_19.
-confirm_pain(severe_pain) :- assert(pain(severe_pain)), add_count_heart_disease.
-confirm_pain(overwhelming_pain) :- assert(pain(overwhelming_pain)),add_count_cancer.
-confirm_pain(pain_free) :- assert(pain(pain_free)) , add_count_flu.
+confirm_pain(severe_pain) :- assert(pain(severe_pain)), add_count_heart_disease, add_count_heart_disease.
+confirm_pain(overwhelming_pain) :- assert(pain(overwhelming_pain)),add_count_cancer, add_count_cancer.
+confirm_pain(pain_free) :- assert(pain(pain_free)) , add_count_flu, add_count_flu.
 
 %----------------------------------------------------------------------------------------------------------
 % Patient's Mood Knowledge
@@ -156,11 +157,7 @@ mood_questions(['Are you feeling calm?','Are you feeling worried?','Are you feel
 mood_query(X) :- mood_questions([X|T]), takeout(X, [X|T], T), (retractall(mood_questions(_)), assertz(mood_questions(T))), ask_mood_repeat(X). 
 
 
-% mood(calm) :- pain(pain_free).
-% mood(worried) :- pain(mild_pain).
-% mood(stressed) :- pain(moderate_pain).
-% mood(fearful) :- pain(severe_pain).
-% mood(panic_stricken) :- pain(overwhelming_pain).
+%this would determine how should the doctor treat the patient
 confirm_mood(calm) :- assert(mood(calm)).
 confirm_mood(worried) :- assert(mood(worried)).
 confirm_mood(stressed) :- assert(mood(stressed)).
@@ -173,20 +170,20 @@ confirm_mood(panic_stricken) :- assert(mood(panic_stricken)).
 
 /*Lists of possible speeches*/
 emoticons(['^_^',':D',':O','^^',':)']).
-filler_words(['Interesting...','Hmm...','That being said.','Um...','Uh..huh..','Fascinating...','Oh I see...']).
-kidding(['The cost will be 1 million. Just kidding.','How many days of MC do you need? Just kidding.','An apple a day keeps the doctor away. Here is one for u.','Where is my Google? Just kidding.','Do you want lollipop?']).
-knoweldgable(['I have seen this many times.','This is very common.','This is not out of this world.','Why am I not surprised.']).
+filler_words(['Interesting...','Hmm...','Um...','Uh..huh..','Fascinating...','Oh I see...']).
+kidding(['The consultation fees will be 1 million. Just kidding.','How many days of MC do you need? Just kidding.','An apple a day keeps the doctor away. Here is one for u.','Time to Google your symptoms. Just kidding.','Smoking gives me more motivation to find a cure, want a stick? Just kidding.']).
+knowledgable(['I have seen this many times.','This is very common.','This is not out of this world.','Why am I not surprised.']).
 companion(['We are in the same boat.','Let us go through this together.','You are not alone.','Let us stand strong together.','Together we can.']).
 reassure(['Like yourself, I have been through this before.','Do not worry.','Do not fear.','I understand.']).
-relax(['Take deep breaths.','Cheer up my friend.','Be happy','Be grateful','Stay cheerful','Life is precious']).
+relax(['Take deep breaths.','Cheer up my friend.','There will always be hope as long as you believe','You are braver than you think.']).
 attentive(['My ears are wide open for you.','Yes, I am listening please continue.','Your words are equally important to me.','*Looks Attentive*']).
 inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear from me.','However much you might watch me I should be watching you more.','It is going to be ok in the end. If it is not ok, it is not the end.']).
 
 /* Flattens all applicable gesture into a super list L without duplicates */
-all_reactions(L) :- mood(calm), knoweldgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(worried), knoweldgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_reactions(L) :- mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(fearful), reassure(A), relax(B), filler_words(C), knoweldgable(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
 all_reactions(L) :- mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
 
 /*Picks a random reaction from a list of reactions*/
@@ -332,7 +329,7 @@ incr_ache :- add_count_flu, add_count_flu.
 %weak x2
 incr_weak :- add_count_flu, add_count_flu.
 %fever x2
-incr_fever :- add_count_flu, add_count_flu.
+incr_fever :- add_count_flu, add_count_covid_19.
 %tired(flu, covid-19, cancer, heart disease)
 incr_tired :- (add_count_flu, add_count_covid_19, add_count_cancer, add_count_heart_disease).
 %rash (allergy, covid-19
@@ -344,7 +341,7 @@ incr_sneeze :- add_count_allergy, add_count_allergy.
 %red_eye x2
 incr_red_eye :- add_count_allergy, add_count_allergy.
 %loss of speech x2
-incr_loss_of_speech :- add_count_covid_19, add_count_covid_19.
+incr_loss_of_speech :- add_count_covid_19, add_count_covid_19, add_count_covid_19.
 
 %no_appetite x2
 incr_no_appetite :- add_count_heart_disease, add_count_heart_disease.
@@ -355,7 +352,7 @@ incr_breathless :- (add_count_heart_disease, add_count_cancer).
 
 %high blood sugar (hbs, cancer)
 incr_infection:- (add_count_high_blood_sugar, add_count_cancer).
-incr_weight_loss :- add_count_high_blood_sugar, add_count_high_blood_sugar.
+incr_weight_loss :- (add_count_high_blood_sugar, add_count_heart_disease).
 incr_pee_frequently :- add_count_high_blood_sugar, add_count_high_blood_sugar.
 incr_thirst :- add_count_high_blood_sugar, add_count_high_blood_sugar.
 incr_blur_vision :- add_count_high_blood_sugar, add_count_high_blood_sugar.
