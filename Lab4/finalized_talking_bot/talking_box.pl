@@ -168,9 +168,6 @@ confirm_mood(fearful) :- assert(mood(fearful)).
 confirm_mood(panic_stricken) :- assert(mood(panic_stricken)).
 
 
-
-
-
 %----------------------------------------------------------------------------------------------------------
 %Doctor's Reaction Knowledge
 

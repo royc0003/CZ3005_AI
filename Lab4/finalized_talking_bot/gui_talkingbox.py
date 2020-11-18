@@ -41,7 +41,9 @@ all_symptoms = (q[0]['L'])
 symptoms = all_symptoms
 random.shuffle(symptoms)
 pain_questions = list(prolog.query("pain_questions(L)"))[0]['L']
+mood_questions = list(prolog.query("mood_questions(L)"))[0]['L']
 
+print(str(mood_questions[0]))
 
 
 # Create the Window
@@ -52,7 +54,8 @@ del(tts)
 
 # Main logic for the program
 # State = 0 : Ask user if any pain
-# State = 1 : ASk user for degree of pain
+# State = 1 : Ask user for degree of pain
+# State = 5 : Ask user for mood level
 # State = 2 : Ask user for symptoms
 # State = 3 : Diagnose the user
 while True:
@@ -70,12 +73,13 @@ while True:
             sentence = str(pain_questions.pop(0))
             print("Debugging: "+sentence)
         elif event == 'No':
-            state = 2
+            state = 5
             list(prolog.query("confirm_pain(pain_free)"))
             print("Asserted pain free")
-            all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-            random.shuffle(all_gestures)
+            #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+            #random.shuffle(all_gestures)
             symptom = str(symptoms.pop(0))
+            sentence = str(mood_questions.pop(0))
             
             
             
@@ -85,27 +89,29 @@ while True:
     elif state == 1:
         if sentence == 'Do you feel mild pain?':
             if event == 'Yes':
-                state = 2
+                state = 5
                 list(prolog.query("confirm_pain(mild_pain)"))
                 print("Asserted mild pain")
-                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                random.shuffle(all_gestures)
+                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
-                
-               
+                sentence = str(mood_questions.pop(0))
+
                 
             elif event == 'No':
                 sentence = str(pain_questions.pop(0))
                 
+
         elif sentence == 'Do you feel moderate pain?':
             if event == 'Yes':
-                state = 2
+                state = 5
                 list(prolog.query("confirm_pain(moderate_pain)"))
                 print("Asserted moderate pain")
-                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                random.shuffle(all_gestures)
+                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
+                sentence = str(mood_questions.pop(0))
                 
              
             elif event == 'No':
@@ -113,35 +119,115 @@ while True:
                 
         elif sentence == 'Do you feel severe pain?':
             if event == 'Yes':
-                state = 2
+                state = 5
                 list(prolog.query("confirm_pain(severe_pain)"))
                 print("Asserted severe pain")
-                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                random.shuffle(all_gestures)
+                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
+                sentence = str(mood_questions.pop(0))
                 
             elif event == 'No':
                 sentence = str(pain_questions.pop(0))
                 
         elif sentence == 'Do you feel overwhelmingly severe pain?':
             if event == 'Yes':
-                state = 2
+                state = 5
                 list(prolog.query("confirm_pain(overwhelming_pain)"))
                 print("Asserted overwhelming pain")
-                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
-                random.shuffle(all_gestures)
+                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                #random.shuffle(all_gestures)
                 symptom = str(symptoms.pop(0))
+                sentence = str(mood_questions.pop(0))
             
                 
             elif event == 'No':
                 list(prolog.query("confirm_pain(pain_free)"))
                 print("Asserted pain free")
+                state = 5
+                #all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                #random.shuffle(all_gestures)
+                symptom = str(symptoms.pop(0))
+                sentence = str(mood_questions.pop(0))
+                
+    # this state is mainly to query for all questions
+    #(1) Assert the mood level
+    #(2) Query the appropriate gestures for subsequent states
+    elif state == 5:
+        if sentence == 'Are you feeling calm?':
+            if event == 'Yes':
+                state = 2
+                list(prolog.query("confirm_mood(calm)"))
+                print("Asserted mood(calm)")
+                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                random.shuffle(all_gestures)
+                #symptom = str(symptoms.pop(0))
+                
+                
+            elif event == 'No':
+                sentence = str(mood_questions.pop(0))
+                
+        elif sentence == 'Are you feeling worried?':
+            if event == 'Yes':
+                state = 2
+                list(prolog.query("confirm_mood(worried)"))
+                print("Asserted mood(worried)")
+                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                random.shuffle(all_gestures)
+                #symptom = str(symptoms.pop(0))
+                
+             
+            elif event == 'No':
+                sentence = str(mood_questions.pop(0))
+        
+
+        elif sentence == 'Are you feeling stressed?':
+            if event == 'Yes':
+                state = 2
+                list(prolog.query("confirm_mood(stressed)"))
+                print("Asserted mood(stressed)")
+                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                random.shuffle(all_gestures)
+                #symptom = str(symptoms.pop(0))
+                
+             
+            elif event == 'No':
+                sentence = str(mood_questions.pop(0))
+
+
+        elif sentence == 'Are you feeling fearful?':
+            if event == 'Yes':
+                state = 2
+                list(prolog.query("confirm_mood(fearful)"))
+                print("Asserted mood(fearful)")
+                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                random.shuffle(all_gestures)
+                #symptom = str(symptoms.pop(0))
+                
+             
+            elif event == 'No':
+                sentence = str(mood_questions.pop(0))
+
+
+        elif sentence == 'Are you feeling panic stricken?':
+            if event == 'Yes':
+                state = 2
+                list(prolog.query("confirm_mood(panic_stricken)"))
+                print("Asserted mood(panic_stricken)")
+                all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
+                random.shuffle(all_gestures)
+                #symptom = str(symptoms.pop(0))
+                
+             
+            elif event == 'No':
+                list(prolog.query("confirm_mood(calm)"))
+                print("Asserted pain free")
                 state = 2
                 all_gestures = list(prolog.query("all_reactions(L)"))[0]['L']
                 random.shuffle(all_gestures)
-                symptom = str(symptoms.pop(0))
-                
-                
+                #symptom = str(symptoms.pop(0))
+        
+
     elif state == 2:
         # Check each and every symptom, if user has it, assert it in the KB and do the relevant incremenetation.
         # If symptoms list to query is empty, diagnose the user
