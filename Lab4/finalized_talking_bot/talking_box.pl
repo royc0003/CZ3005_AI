@@ -216,34 +216,34 @@ random_symptom(X) :- symptoms(L), random_member(X, L).
     If user doesnt have that symptom, continue to query until the list is empty.
 */
 query_symptoms(X) :- random_symptom(X), 
-                    (X==lump -> reaction, print('Do you have any lumps?'), print('y/n: '), read(Answer), (Answer==y -> merge(lump) ; Answer==n );
-                     X==whiteheads -> reaction, print('Do you have any whiteheads?'), print('y/n: '), read(Answer), (Answer==y -> merge(whiteheads) ; Answer==n );
-                     X==blackheads -> reaction, print('Do you feel blackheads?'), print('y/n: '), read(Answer), (Answer==y -> merge(blackheads) ; Answer==n );
+                    (X==lump -> reaction, print('Do you have any lump?'), print('y/n: '), read(Answer), (Answer==y -> merge(lump) ; Answer==n );
+                     X==whiteheads -> reaction, print('Do you have any whitehead?'), print('y/n: '), read(Answer), (Answer==y -> merge(whiteheads) ; Answer==n );
+                     X==blackheads -> reaction, print('Do you have any blackhead?'), print('y/n: '), read(Answer), (Answer==y -> merge(blackheads) ; Answer==n );
                      X==pus -> reaction, print('Did you secrete pus?'), print('y/n: '), read(Answer), (Answer==y -> merge(pus) ; Answer==n );
                      X==cyst -> reaction, print('Do you have any cyst?'), print('y/n: '), read(Answer), (Answer==y -> merge(cyst) ; Answer==n );
                      X==scar -> reaction, print('Do you have any scar?'), print('y/n: '), read(Answer), (Answer==y -> merge(scar) ; Answer==n );
                      X==cough ->reaction, print('Do you have cough'), print('y/n: '), read(Answer), (Answer==y -> merge(cough) ; Answer==n );
-                     X==runny_nose -> reaction, print('Do you have runny_nose?'), print('y/n: '), read(Answer), (Answer==y -> merge(runny_nose) ; Answer==n );
+                     X==runny_nose -> reaction, print('Are you having runny nose?'), print('y/n: '), read(Answer), (Answer==y -> merge(runny_nose) ; Answer==n );
                      X==ache -> reaction, print('Did you have ache?'), print('y/n: '), read(Answer), (Answer==y -> merge(ache) ; Answer==n );
                      X==weak -> reaction, print('Do you feel that your body is weak?'), print('y/n: '), read(Answer), (Answer==y -> merge(weak) ; Answer==n );
-                     X==tired -> reaction, print('Do you feel tired?'), print('y/n: '), read(Answer), (Answer==y -> merge(tired) ; Answer==n );
-                     X==fever -> reaction, print('Do you have fever?'), print('y/n: '), read(Answer), (Answer==y -> merge(fever) ; Answer==n );
+                     X==tired -> reaction, print('Do you feel perpetually tired?'), print('y/n: '), read(Answer), (Answer==y -> merge(tired) ; Answer==n );
+                     X==fever -> reaction, print('Do you have a fever?'), print('y/n: '), read(Answer), (Answer==y -> merge(fever) ; Answer==n );
                      X==rash -> reaction, print('Do you have any rash?'), print('y/n: '), read(Answer), (Answer==y -> merge(rash) ; Answer==n );
                      X==wheeze -> reaction, print('Are you wheezing?'), print('y/n: '), read(Answer), (Answer==y -> merge(wheeze) ; Answer==n );
                      X==sneeze -> reaction, print('Do you sneeze frequently?'), print('y/n: '), read(Answer), (Answer==y -> merge(sneeze) ; Answer==n );
                      X==red_eye -> reaction, print('Do you have red eyes ?'), print('y/n: '), read(Answer), (Answer==y -> merge(red_eye ) ; Answer==n );
                      X==loss_of_speech -> reaction, print('Do you sometimes experience loss of speech?'), print('y/n: '), read(Answer), (Answer==y -> merge(loss_of_speech) ; Answer==n );
-                     X==no_appetite -> reaction, print('Did you experience the lack of appetite?'), print('y/n: '), read(Answer), (Answer==y -> merge(no_appetite) ; Answer==n );
+                     X==no_appetite -> reaction, print('Did you experience lack of appetite?'), print('y/n: '), read(Answer), (Answer==y -> merge(no_appetite) ; Answer==n );
                      X==leg_swell ->reaction, print('Do you have swelling on your leg?'), print('y/n: '), read(Answer), (Answer==y -> merge(leg_swell) ; Answer==n );
                      X==chest_pain -> reaction, print('Do you have any chest pain ?'), print('y/n: '), read(Answer), (Answer==y -> merge(chest_pain ) ; Answer==n );
                      X==weight_loss -> reaction, print('Do you experience drastic weight loss?'), print('y/n: '), read(Answer), (Answer==y -> merge(weight_loss) ; Answer==n );
                      X==pee_frequently-> reaction, print('Did you have to use the bathroom frequently?'), print('y/n: '), read(Answer), (Answer==y -> merge(pee_frequently) ; Answer==n );
                      X==thirst -> reaction, print('Do you always feel thirsty?'), print('y/n: '), read(Answer), (Answer==y -> merge(thirst) ; Answer==n );
                      X==blur_vision -> reaction, print('Do you have any blur vision?'), print('y/n: '), read(Answer), (Answer==y -> merge(blur_vision) ; Answer==n );
-                     X==dry_mouth -> reaction, print('Do you have dry mouth?'), print('y/n: '), read(Answer), (Answer==y -> merge(dry_mouth) ; Answer==n );
+                     X==dry_mouth -> reaction, print('Do you have a dry mouth?'), print('y/n: '), read(Answer), (Answer==y -> merge(dry_mouth) ; Answer==n );
                      X==infection -> reaction, print('Do you have any infection?'), print('y/n: '), read(Answer), (Answer==y -> merge(infection) ; Answer==n );
                      X==pale_skin -> reaction, print('Do you sometimes have pale skin?'), print('y/n: '), read(Answer), (Answer==y -> merge(pale_skin) ; Answer==n );
-                     X==breathless -> reaction, print('Do you have any breathlessness?'), print('y/n: '), read(Answer), (Answer==y -> merge(breathless) ; Answer==n );
+                     X==breathless -> reaction, print('Did you experience breathlessness?'), print('y/n: '), read(Answer), (Answer==y -> merge(breathless) ; Answer==n );
                      X==bleed -> reaction, print('Do you often bleed?'), print('y/n: '), read(Answer), (Answer==y -> merge(bleed) ; Answer==n )
                     )
                     , symptoms(L), select(X, L, T), retractall(symptoms(_)), assertz(symptoms(T)), query_symptoms(_).
@@ -377,12 +377,12 @@ diagnose(cancer) :- count_acne(A), count_flu(B), count_allergy(C), count_covid_1
 
 
 
-diagnosis :- diagnose(acne) -> print('You have an acne.') ;
-             diagnose(flu) -> print('You have a flu.') ;
-             diagnose(allergy) -> print('You have an allergy.') ;
+diagnosis :- diagnose(acne) -> print('I diagnose that you have an acne.') ;
+             diagnose(flu) -> print('I diagnose that you have a flu.') ;
+             diagnose(allergy) -> print('I diagnose that you have an allergy.') ;
              diagnose(covid_19) -> print('I am sorry but you have COVID-19.') ;
              diagnose(heart_disease) -> print('I apologize but you have heart disease.') ;
-             diagnose(high_blood_sugar) -> print('You have high blood suagar.') ;
+             diagnose(high_blood_sugar) -> print('I diagnose that you have high blood suagar.') ;
              diagnose(cancer) -> print('I regret to inform you that you have cancer.').
 
 
