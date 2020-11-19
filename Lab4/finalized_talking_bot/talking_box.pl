@@ -225,6 +225,7 @@ all_gesture(L) :- gesture(reassure), reassure(A), relax(B), attentive(C), knowle
 
 all_gesture(L) :- gesture(companion), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
 
+
 /* Flattens all applicable gesture into a super list L without duplicates */
 all_reactions(L) :- pain(pain_free),mood(calm), assertz(gesture(humorous)), all_gesture(L).
 all_reactions(L) :- pain(mild_pain),mood(calm), assertz(gesture(humorous)), all_gesture(L).
