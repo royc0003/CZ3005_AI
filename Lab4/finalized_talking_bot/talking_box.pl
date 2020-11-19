@@ -189,6 +189,16 @@ confirm_mood(panic_stricken) :- assert(mood(panic_stricken)).
 %Doctor's Reaction Knowledge
 
 /*Lists of possible gestures*/
+/*
+
+Gestures base on decreasing seriousness:
+Companion (serious) > inspiring_quote > attentive > relax > reassure > knowledgable > filler_words > emoticons > kidding (least serious)
+The most challenging part about designing this gesture database is the combination of gestures to reflect the genuineness of the Doctor's reaction towards
+the patient.
+For instance, 2 extreme parameters such as, overwhelming_pain and calm --> should not have a kidding gesture as it'll be extremely unprofessional for 
+a doctor to do so.
+As such, there should be a fine balance of seriousness and liveliness in the Doctor's gesture.
+*/
 emoticons(['^_^',':D',':O','^^',':)']).
 filler_words(['Interesting...','Hmm...','Um...','Uh..huh..','Fascinating...','Oh I see...']).
 kidding(['The consultation fees will be 1 million. Just kidding.','How many days of MC do you need? Just kidding.','An apple a day keeps the doctor away. Here is one for u.','Time to Google your symptoms. Just kidding.','Smoking gives me more motivation to find a cure, want a stick? Just kidding.']).
@@ -203,14 +213,14 @@ inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear
 all_reactions(L) :- pain(pain_free),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_reactions(L) :- pain(mild_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_reactions(L) :- pain(moderate_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(severe_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(overwhelming_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(severe_pain),mood(calm), knowledgable(A), emoticons(B), inspiring_quote(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(overwhelming_pain),mood(calm), knowledgable(A), emoticons(B), companion(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 
 all_reactions(L) :- pain(pain_free),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_reactions(L) :- pain(mild_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_reactions(L) :- pain(moderate_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(severe_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(overwhelming_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(severe_pain),mood(worried), knowledgable(A), reassure(B), attentive(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(overwhelming_pain),mood(worried), knowledgable(A), reassure(B), companion(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 
 all_reactions(L) :- pain(pain_free),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_reactions(L) :- pain(mild_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
@@ -247,7 +257,7 @@ Initial Input from Patient(User) for Pain Level
 & proceed to mood_query
 */
 ask(0) :- 
-    print('안녕! Hello! Do you feel any pain?'),
+    print('안녕! Hello! I am Doctor Box. Do you feel any pain?'),
     print('y/n: '),
     read(Answer),
     (Answer==y -> pain_query(_);
