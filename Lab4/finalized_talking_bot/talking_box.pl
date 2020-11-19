@@ -36,7 +36,11 @@ append([], A, A).
 
 %----------------------------------------------------------------------------------------------------------
 % Disease 
-% 7 different diseases with its 7 associated symptoms
+
+%Disease Database
+disease([acne, flu, allergy, covid_19, heart_disease, high_blood_sugar, cancer]).
+
+% 7 different diseases with its 6 associated symptoms
 /*Symptoms for Acne*/
 acne([lump, whiteheads, blackheads, pus, cyst, scar]).
 
@@ -159,7 +163,7 @@ confirm_pain(overwhelming_pain) :- assert(pain(overwhelming_pain)),add_count_can
 confirm_pain(pain_free) :- assert(pain(pain_free)) , add_count_flu, add_count_flu.
 
 %----------------------------------------------------------------------------------------------------------
-% Patient's Mood Knowledge
+% Patient's Mood Database
 mood_questions(['Are you feeling calm?','Are you feeling worried?','Are you feeling stressed?','Are you feeling fearful?','Are you feeling panic stricken?']).
 
 % 4(Main) Queries for Level of Mood
@@ -211,7 +215,8 @@ companion(['We are in the same boat.','Let us go through this together.','You ar
 reassure(['Like yourself, I have been through this before.','Do not worry.','Do not fear.','I understand.']).
 relax(['Take deep breaths.','Cheer up my friend.','There will always be hope as long as you believe','You are braver than you think.']).
 attentive(['My ears are wide open for you.','Yes, I am listening please continue.','Your words are equally important to me.','*Looks Attentive*']).
-inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear from me.','However much you might watch me I should be watching you more.','It is going to be ok in the end. If it is not ok, it is not the end.']).
+inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear from me.','However much you might watch me I should be watching you more.',
+'It is going to be ok in the end. If it is not ok, it is not the end.']).
 
 
 %Rules governing all gestures used by Doctor
