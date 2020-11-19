@@ -139,7 +139,12 @@ pain_questions(['Do you feel mild pain?','Do you feel moderate pain?', 'Do you f
 */
 pain_query(X) :- pain_questions([X|T]), takeout(X, [X|T], T), (retractall(pain_questions(_)), assertz(pain_questions(T))), ask_repeat(X). 
 
-/*Error handling -> pain_query list is now empty, and to prevent error, just treat as common flu*/
+/*
+::Error Handling::
+(1) If Patient(User) answers 'No' to all pain, pain_query list is now empty.
+(2) To prevent error, just treat as common flu by asserting pain(pain_free).
+(3) Then proceed with mood_query()
+*/
 pain_query([]) :- (assert(pain(pain_free)), add_count_flu, add_count_flu, mood_query(_)).
 
 
@@ -163,6 +168,12 @@ mood_questions(['Are you feeling calm?','Are you feeling worried?','Are you feel
 */
 mood_query(X) :- mood_questions([X|T]), takeout(X, [X|T], T), (retractall(mood_questions(_)), assertz(mood_questions(T))), ask_mood_repeat(X). 
 
+/*
+::Error Handling::
+(1) If Patient(User) answers 'No' to all mood, mood_query list is now empty.
+(2) To prevent error, just treat as common flu by asserting mood(calm).
+(3) Then proceed with query_symptoms(_), the main logic flow of the programme. 
+*/
 mood_query([]) :- (assert(mood(calm)), query_symptoms(_)).
 
 
