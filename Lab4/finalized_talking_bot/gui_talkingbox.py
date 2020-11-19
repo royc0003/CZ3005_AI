@@ -13,16 +13,33 @@ sentence = 'Hello! I am Doctor Box. Do you feel any pain?'
 state = 0
 all_gestures = []
 
+
 class _TTS:
-    
+    """
+    Speech Recognition Class
+    (1) Attributes of engine and rate are given. 
+    Note that rate can be changed to control the speed of speech.
+    (2) Having such a class follows best practice of:
+    - Abstraction
+    - Segregation 
+    - Low in Coupling and High Cohesion
+    """
     engine = None
     rate = 170
     def __init__(self):
+        """
+        Instantiates a new speech recongition engine and allows for control of rate.
+        """
         self.engine = pyttsx3.init()
         self.engine.setProperty("rate", self.rate)
 
 
     def start(self,text_):
+        """
+        (1) Calls engine.say to recognize and AI vocalize text message.
+        (2) runAndWait() is to Await all threads till completion before destroying.
+        (3) Engine is completely stopped to ensure there's no speech residue left in the engine.
+        """
         self.engine.say(text_)
         self.engine.runAndWait()
         self.engine.stop()
@@ -371,8 +388,6 @@ while True:
         # Diagnose the user by querying the KB.
         # The KB should return the disease with the highest count value
         diagnosis = list(prolog.query('diagnose(L)'))[0]['L']
-        # fever = list(prolog.query('count_fever(L)'))[0]['L']
-        # injury = list(prolog.query('count_fever(L)'))[0]['L']
         if diagnosis == 'acne':
             sentence = 'I diagnose that you have an acne.'
         elif diagnosis == 'flu':

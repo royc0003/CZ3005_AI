@@ -140,7 +140,7 @@ pain_questions(['Do you feel mild pain?','Do you feel moderate pain?', 'Do you f
 pain_query(X) :- pain_questions([X|T]), takeout(X, [X|T], T), (retractall(pain_questions(_)), assertz(pain_questions(T))), ask_repeat(X). 
 
 /*Error handling -> pain_query list is now empty, and to prevent error, just treat as common flu*/
-pain_query([]) :- (assert(pain(pain_free)), add_count_flu, query_symptoms(_)).
+pain_query([]) :- (assert(pain(pain_free)), add_count_flu, add_count_flu, mood_query(_)).
 
 
 /*Confirm pain level and assert*/
@@ -154,7 +154,16 @@ confirm_pain(pain_free) :- assert(pain(pain_free)) , add_count_flu, add_count_fl
 %----------------------------------------------------------------------------------------------------------
 % Patient's Mood Knowledge
 mood_questions(['Are you feeling calm?','Are you feeling worried?','Are you feeling stressed?','Are you feeling fearful?','Are you feeling panic stricken?']).
+
+/* Queries for Level of Mood */
+/* 1. Take out head of the list. 
+   2. Update the mood_questions to the tail of the list, 
+      this can be done by reseting mood_questions and assert the tail. 
+   3. Ask the mood_question again.
+*/
 mood_query(X) :- mood_questions([X|T]), takeout(X, [X|T], T), (retractall(mood_questions(_)), assertz(mood_questions(T))), ask_mood_repeat(X). 
+
+mood_query([]) :- (assert(mood(calm)), query_symptoms(_)).
 
 
 %this would determine how should the doctor treat the patient
@@ -194,6 +203,13 @@ reaction :- random_reaction(X), print(X), all_reactions(L), select(X, L, T), ret
 
 %----------------------------------------------------------------------------------------------------------
 % (Main Function)
+
+/*
+Initial Input from Patient(User) for Pain Level
+(1) If there's pain, proceed to Pain Query
+(2) If there's no pain, confirm that the patient is "Pain Free"
+& proceed to mood_query
+*/
 ask(0) :- 
     print('안녕! Hello! Do you feel any pain?'),
     print('y/n: '),
@@ -201,6 +217,11 @@ ask(0) :-
     (Answer==y -> pain_query(_);
     Answer==n -> confirm_pain(pain_free), mood_query(_)).
 
+/*
+Subsequent Input from Patient(User) for Pain Level
+(1) Iterates through a list of Pain Queries
+(2) When 
+*/
 ask_repeat(X) :-
     print(X),
     print('y/n: '),
@@ -215,7 +236,7 @@ ask_mood_repeat(X) :-
     print(X),
     print('y/n: '),
     read(Answer),
-    (% query_symptoms(_)
+    (
     Answer==y -> ((X == 'Are you feeling calm?') -> (confirm_mood(calm),query_symptoms(_)) ;
                 (X == 'Are you feeling worried?') -> (confirm_mood(worried),query_symptoms(_)) ;
                 (X == 'Are you feeling stressed?') -> (confirm_mood(stressed),query_symptoms(_)) ;
@@ -270,7 +291,7 @@ query_symptoms(X) :- random_symptom(X),
 query_symptoms([]) :- diagnosis.
 
 
- /* Combine assertion and incrementation into a single rule */
+/* Combine assertion and incrementation into a single rule */
 /* Used when the user has the symptoms 
    1. Assert has(Symptom)
    2. Increment relevant counter associated with that symptom */
