@@ -209,36 +209,52 @@ relax(['Take deep breaths.','Cheer up my friend.','There will always be hope as 
 attentive(['My ears are wide open for you.','Yes, I am listening please continue.','Your words are equally important to me.','*Looks Attentive*']).
 inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear from me.','However much you might watch me I should be watching you more.','It is going to be ok in the end. If it is not ok, it is not the end.']).
 
+
+%Combination of gestures
+all_gesture(L) :- gesture(humorous), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_gesture(L) :- gesture(attentive), knowledgable(A), emoticons(B), inspiring_quote(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_gesture(L) :- gesture(accommodating), knowledgable(A), emoticons(B), companion(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+
+all_gesture(L) :-  gesture(amiable), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_gesture(L) :- gesture(very_attentive), knowledgable(A), reassure(B), attentive(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_gesture(L) :- gesture(console), knowledgable(A), reassure(B), companion(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+
+all_gesture(L) :- gesture(comfort), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+
+all_gesture(L) :- gesture(reassure), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
+
+all_gesture(L) :- gesture(companion), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
+
 /* Flattens all applicable gesture into a super list L without duplicates */
-all_reactions(L) :- pain(pain_free),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(mild_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(moderate_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(severe_pain),mood(calm), knowledgable(A), emoticons(B), inspiring_quote(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(overwhelming_pain),mood(calm), knowledgable(A), emoticons(B), companion(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(pain_free),mood(calm), assertz(gesture(humorous)), all_gesture(L).
+all_reactions(L) :- pain(mild_pain),mood(calm), assertz(gesture(humorous)), all_gesture(L).
+all_reactions(L) :- pain(moderate_pain),mood(calm), assertz(gesture(humorous)), all_gesture(L).
+all_reactions(L) :- pain(severe_pain),mood(calm), assertz(gesture(attentive)), all_gesture(L).
+all_reactions(L) :- pain(overwhelming_pain),mood(calm), assertz(gesture(accommodating)), all_gesture(L).
 
-all_reactions(L) :- pain(pain_free),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(mild_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(moderate_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(severe_pain),mood(worried), knowledgable(A), reassure(B), attentive(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(overwhelming_pain),mood(worried), knowledgable(A), reassure(B), companion(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(pain_free),mood(worried), assertz(gesture(amiable)), all_gesture(L).
+all_reactions(L) :- pain(mild_pain),mood(worried), assertz(gesture(amiable)), all_gesture(L).
+all_reactions(L) :- pain(moderate_pain),mood(worried), assertz(gesture(amiable)), all_gesture(L).
+all_reactions(L) :- pain(severe_pain),mood(worried), assertz(gesture(very_attentive)), all_gesture(L).
+all_reactions(L) :- pain(overwhelming_pain),mood(worried), assertz(gesture(console)), all_gesture(L).
 
-all_reactions(L) :- pain(pain_free),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(mild_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(moderate_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(severe_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(overwhelming_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(pain_free),mood(stressed), assertz(gesture(comfort)), all_gesture(L).
+all_reactions(L) :- pain(mild_pain),mood(stressed), assertz(gesture(comfort)), all_gesture(L).
+all_reactions(L) :- pain(moderate_pain),mood(stressed), assertz(gesture(comfort)), all_gesture(L).
+all_reactions(L) :- pain(severe_pain),mood(stressed), assertz(gesture(comfort)), all_gesture(L).
+all_reactions(L) :- pain(overwhelming_pain),mood(stressed), assertz(gesture(comfort)), all_gesture(L).
 
-all_reactions(L) :- pain(pain_free),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(mild_pain),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(moderate_pain),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(severe_pain),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(overwhelming_pain),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(pain_free),mood(fearful), assertz(gesture(reassure)), all_gesture(L).
+all_reactions(L) :- pain(mild_pain),mood(fearful), assertz(gesture(reassure)), all_gesture(L).
+all_reactions(L) :- pain(moderate_pain),mood(fearful), assertz(gesture(reassure)), all_gesture(L).
+all_reactions(L) :- pain(severe_pain),mood(fearful), assertz(gesture(reassure)), all_gesture(L).
+all_reactions(L) :- pain(overwhelming_pain),mood(fearful), assertz(gesture(reassure)), all_gesture(L).
 
-all_reactions(L) :- pain(pain_free),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(mild_pain),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(moderate_pain),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(severe_pain),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- pain(overwhelming_pain),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(pain_free),mood(panic_stricken), assertz(gesture(companion)), all_gesture(L).
+all_reactions(L) :- pain(mild_pain),mood(panic_stricken), assertz(gesture(companion)), all_gesture(L).
+all_reactions(L) :- pain(moderate_pain),mood(panic_stricken), assertz(gesture(companion)), all_gesture(L).
+all_reactions(L) :- pain(severe_pain),mood(panic_stricken), assertz(gesture(companion)), all_gesture(L).
+all_reactions(L) :- pain(overwhelming_pain),mood(panic_stricken), assertz(gesture(companion)), all_gesture(L).
 
 
 /*Picks a random reaction from a list of reactions*/
