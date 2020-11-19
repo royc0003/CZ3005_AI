@@ -188,7 +188,7 @@ confirm_mood(panic_stricken) :- assert(mood(panic_stricken)).
 %----------------------------------------------------------------------------------------------------------
 %Doctor's Reaction Knowledge
 
-/*Lists of possible speeches*/
+/*Lists of possible gestures*/
 emoticons(['^_^',':D',':O','^^',':)']).
 filler_words(['Interesting...','Hmm...','Um...','Uh..huh..','Fascinating...','Oh I see...']).
 kidding(['The consultation fees will be 1 million. Just kidding.','How many days of MC do you need? Just kidding.','An apple a day keeps the doctor away. Here is one for u.','Time to Google your symptoms. Just kidding.','Smoking gives me more motivation to find a cure, want a stick? Just kidding.']).
@@ -200,11 +200,36 @@ attentive(['My ears are wide open for you.','Yes, I am listening please continue
 inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear from me.','However much you might watch me I should be watching you more.','It is going to be ok in the end. If it is not ok, it is not the end.']).
 
 /* Flattens all applicable gesture into a super list L without duplicates */
-all_reactions(L) :- mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
-all_reactions(L) :- mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(pain_free),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(mild_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(moderate_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(severe_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(overwhelming_pain),mood(calm), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+
+all_reactions(L) :- pain(pain_free),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(mild_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(moderate_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(severe_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(overwhelming_pain),mood(worried), knowledgable(A), reassure(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+
+all_reactions(L) :- pain(pain_free),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(mild_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(moderate_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(severe_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(overwhelming_pain),mood(stressed), reassure(A), emoticons(B), relax(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
+
+all_reactions(L) :- pain(pain_free),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(mild_pain),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(moderate_pain),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(severe_pain),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(overwhelming_pain),mood(fearful), reassure(A), relax(B), attentive(C), knowledgable(D), flatten([A, B, C, D], X), sort(X, L).
+
+all_reactions(L) :- pain(pain_free),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(mild_pain),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(moderate_pain),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(severe_pain),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
+all_reactions(L) :- pain(overwhelming_pain),mood(panic_stricken), attentive(A), companion(B), inspiring_quote(C), reassure(D), flatten([A, B, C, D], X), sort(X, L).
+
 
 /*Picks a random reaction from a list of reactions*/
 random_reaction(X) :- all_reactions(L), random_member(X,L).
