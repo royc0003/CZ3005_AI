@@ -220,6 +220,7 @@ inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear
 
 
 %Rules governing all gestures used by Doctor
+/* Flattens all applicable gesture into a super list L without duplicates */
 all_gesture(L) :- gesture(humorous), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_gesture(L) :- gesture(attentive), knowledgable(A), emoticons(B), inspiring_quote(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_gesture(L) :- gesture(accommodating), knowledgable(A), emoticons(B), companion(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
