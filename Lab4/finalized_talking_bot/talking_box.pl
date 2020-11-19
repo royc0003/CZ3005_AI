@@ -14,8 +14,7 @@
 
 
 %----------------------------------------------------------------------------------------------------------
-%Common Controls Functions
-%Important functions to control list
+% Helper Functions
 /* Check if X is a member of the list.
    1. Check if X is in the head of the list
    2. If no, do a recursion and check if X is in the tail of the list
@@ -59,14 +58,16 @@ high_blood_sugar([infection, weight_loss, pee_frequently, thirst, blur_vision, d
 /*Symptoms for Cancer*/
 cancer([tired, infection, lump, pale_skin, bleed, breathless]).
 
-%functions related to symptoms
+% #2(Diagnosis) Retrieves a unique symptom
 /* Flattens all the symptoms into a super list L without duplicates*/
 unique_symptoms(L) :- acne(A), flu(B), allergy(C), covid_19(D), heart_disease(E), high_blood_sugar(F), cancer(G), flatten([A, B, C, D, E, F, G], X), sort(X, L).
+
 
 /* Initialize a list of symptoms to query */
 symptoms(L) :- unique_symptoms(L).
 
 %----------------------------------------------------------------------------------------------------------
+% #6(Diagnosis)
 %Counter Increment Functions
 %Increasing dynamic count for all disease
 /*
@@ -129,9 +130,10 @@ add_count_cancer :-
 % All levels of pain
 pain_knowledge([pain_free, mild_pain, moderate_pain, severe_pain, overwhelming_pain]).
 
+% Pain 'DataBase'
 pain_questions(['Do you feel mild pain?','Do you feel moderate pain?', 'Do you feel severe pain?', 'Do you feel overwhelmingly severe pain?']).
 
-/* Queries for Degree of Pain */
+% #2(Main) Queries for Degree of Pain
 /* 1. Take out head of the list. 
    2. Update the pain_question to the tail of the list, 
       this can be done by reseting pain_questions and assert the tail. 
@@ -160,7 +162,7 @@ confirm_pain(pain_free) :- assert(pain(pain_free)) , add_count_flu, add_count_fl
 % Patient's Mood Knowledge
 mood_questions(['Are you feeling calm?','Are you feeling worried?','Are you feeling stressed?','Are you feeling fearful?','Are you feeling panic stricken?']).
 
-/* Queries for Level of Mood */
+% 4(Main) Queries for Level of Mood
 /* 1. Take out head of the list. 
    2. Update the mood_questions to the tail of the list, 
       this can be done by reseting mood_questions and assert the tail. 
@@ -186,11 +188,10 @@ confirm_mood(panic_stricken) :- assert(mood(panic_stricken)).
 
 
 %----------------------------------------------------------------------------------------------------------
-%Doctor's Reaction Knowledge
+%Doctor's Gestures
 
-/*Lists of possible gestures*/
+
 /*
-
 Gestures base on decreasing seriousness:
 Companion (serious) > inspiring_quote > attentive > relax > reassure > knowledgable > filler_words > emoticons > kidding (least serious)
 The most challenging part about designing this gesture database is the combination of gestures to reflect the genuineness of the Doctor's reaction towards
@@ -199,9 +200,12 @@ For instance, 2 extreme parameters such as, overwhelming_pain and calm --> shoul
 a doctor to do so.
 As such, there should be a fine balance of seriousness and liveliness in the Doctor's gesture.
 */
+
+/*Lists of possible reactions associated to gestures DataBase*/
 emoticons(['^_^',':D',':O','^^',':)']).
 filler_words(['Interesting...','Hmm...','Um...','Uh..huh..','Fascinating...','Oh I see...']).
-kidding(['The consultation fees will be 1 million. Just kidding.','How many days of MC do you need? Just kidding.','An apple a day keeps the doctor away. Here is one for u.','Time to Google your symptoms. Just kidding.','Smoking gives me more motivation to find a cure, want a stick? Just kidding.']).
+kidding(['The consultation fees will be 1 million. Just kidding.','How many days of MC do you need? Just kidding.','An apple a day keeps the doctor away. Here is one for u.'
+,'Time to Google your symptoms. Just kidding.','Smoking gives me more motivation to find a cure, want a stick? Just kidding.']).
 knowledgable(['I have seen this many times.','This is very common.','This is not out of this world.','Why am I not surprised.']).
 companion(['We are in the same boat.','Let us go through this together.','You are not alone.','Let us stand strong together.','Together we can.']).
 reassure(['Like yourself, I have been through this before.','Do not worry.','Do not fear.','I understand.']).
@@ -210,7 +214,7 @@ attentive(['My ears are wide open for you.','Yes, I am listening please continue
 inspiring_quote(['True beauty is a warm heart, a kind soul, and an attentive ear from me.','However much you might watch me I should be watching you more.','It is going to be ok in the end. If it is not ok, it is not the end.']).
 
 
-%Combination of gestures
+%Rules governing all gestures used by Doctor
 all_gesture(L) :- gesture(humorous), knowledgable(A), emoticons(B), kidding(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_gesture(L) :- gesture(attentive), knowledgable(A), emoticons(B), inspiring_quote(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
 all_gesture(L) :- gesture(accommodating), knowledgable(A), emoticons(B), companion(C), filler_words(D), flatten([A, B, C, D], X), sort(X, L).
@@ -258,16 +262,17 @@ all_reactions(L) :- pain(severe_pain),mood(panic_stricken), assertz(gesture(comp
 all_reactions(L) :- pain(overwhelming_pain),mood(panic_stricken), assertz(gesture(companion)), all_gesture(L).
 
 
-/*Picks a random reaction from a list of reactions*/
+/*Picks a random Gesture from a list of reactions*/
 random_reaction(X) :- all_reactions(L), random_member(X,L).
 
+% #6.2 (Main) Get appropriate Gesture
 /*Plays the chosen reaction, remove the used reaction and updates*/
 reaction :- random_reaction(X), print(X), all_reactions(L), select(X, L, T), retractall(all_reactions(_)), assertz(all_reactions(T)).
 
 %----------------------------------------------------------------------------------------------------------
 % (Main Function)
 
-/*
+/* #1(Main) Intialization of Main Program
 Initial Input from Patient(User) for Pain Level
 (1) If there's pain, proceed to Pain Query
 (2) If there's no pain, confirm that the patient is "Pain Free"
@@ -280,10 +285,9 @@ ask(0) :-
     (Answer==y -> pain_query(_);
     Answer==n -> confirm_pain(pain_free), mood_query(_)).
 
-/*
-Subsequent Input from Patient(User) for Pain Level
+/* #3(Main) Subsequent Input from Patient(User) for Pain Level
 (1) Iterates through a list of Pain Queries
-(2) When 
+(2) When successfully selected a Pain Level, proceed to Mood Query
 */
 ask_repeat(X) :-
     print(X),
@@ -295,6 +299,10 @@ ask_repeat(X) :-
                 (X == 'Do you feel overwhelmingly severe pain?') -> (confirm_pain(overwhelming_pain),mood_query(_))) ;
     Answer==n -> pain_query(_)).
 
+/* #5(Main) Confirmation of Mood Query
+(1) Iterate through list of moods
+(2) When successfully selected, mood, proceed to Query Symptoms
+*/
 ask_mood_repeat(X) :-
     print(X),
     print('y/n: '),
@@ -309,13 +317,15 @@ ask_mood_repeat(X) :-
 
 
 %----------------------------------------------------------------------------------------------------------
-% Querying symptoms
-
+% #1(Diagnosis) Querying random symptoms
 random_symptom(X) :- symptoms(L), random_member(X, L).
 
-/* Query the user based on the randomly removed element from the symptom list
+/* #6.1 (Main) Query for Random Symptoms + Get Appropriate Reaction
+    Query the user based on the randomly removed element from the symptom list
     If user has that symptom, assert that symptom and increnment the relevant count. E.g if user has ache, increment count for fever
     If user doesnt have that symptom, continue to query until the list is empty.
+
+    #3(Diagnosis) If user answers "yes" to a symptom, proceed to merge(symptom) and increment the correct disease counter.
 */
 query_symptoms(X) :- random_symptom(X), 
                     (X==lump -> reaction, print('Do you have any lump?'), print('y/n: '), read(Answer), (Answer==y -> merge(lump) ; Answer==n );
@@ -353,7 +363,7 @@ query_symptoms(X) :- random_symptom(X),
 /* If the list is empty, diagnose the user */
 query_symptoms([]) :- diagnosis.
 
-
+% #4(Diagnosis) Increment of appropriate symptom
 /* Combine assertion and incrementation into a single rule */
 /* Used when the user has the symptoms 
    1. Assert has(Symptom)
@@ -392,6 +402,7 @@ merge(bleed) :- (assert(has(bleed)), incr_bleed).
 
 
 %----------------------------------------------------------------------------------------------------------
+% Heuristics
 % Heuristic to add weights to symptoms. This is done to further differentiate diseases with conflicting symptoms.
 %  For instance, both acne and cancer have the same symptom "lump". Which also mean that the symptom "lump" is not unique enough to identify a unique disease.
 % This also means that there's a chance that the counter for count_acne = X might also have the same value as the counter for count_cancer.
@@ -402,7 +413,7 @@ merge(bleed) :- (assert(has(bleed)), incr_bleed).
 % E.g. The unique / stronger indicator for cancer will be "bleed" and "pale_skin" since both symptoms do not overlap with antoher disease
 % And since the total unique symptoms are <=2, the increment_cancer weight for bleed and pale_skin will be 3 respectively.
 
-
+% #5(Diagnosis) Increment of Disease Count associated to symptom
 %lump (acne, cancer)
 incr_lump :- (add_count_acne, add_count_cancer).
 %whiteheads x2 :: Acne
@@ -475,7 +486,7 @@ incr_bleed :- add_count_cancer, add_count_cancer, add_count_cancer.
 
 
 %----------------------------------------------------------------------------------------------------------
-% Diagnosis
+% #7(Diagnosis) Diagnose --> End Program
 /* Diagnose the result based on count. E.g if count_fever is the largest, then fever will be the diagnosis */
 diagnose(acne) :- count_acne(A), count_flu(B), count_allergy(C), count_covid_19(D), count_heart_disease(E), count_high_blood_sugar(F), count_cancer(G),
                     A >= B, A >= C, A >= D, A >= E, A >= F, A >= G.
