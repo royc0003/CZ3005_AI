@@ -154,7 +154,7 @@ pain_query(X) :- pain_questions([X|T]), takeout(X, [X|T], T), (retractall(pain_q
 pain_query([]) :- (assert(pain(pain_free)), add_count_flu, add_count_flu, mood_query(_)).
 
 
-/*Confirm pain level and assert*/
+/* #3.1(Main) Asserts pain level and increase total intial heuristic/counts associated to the disease(s)*/
 %initial confirmation would increase the bias towards certain disease
 confirm_pain(mild_pain) :- assert(pain(mild_pain)), add_count_acne, add_count_allergy.
 confirm_pain(moderate_pain) :- assert(pain(moderate_pain)), add_count_high_blood_sugar, add_count_covid_19.
@@ -183,7 +183,7 @@ mood_query(X) :- mood_questions([X|T]), takeout(X, [X|T], T), (retractall(mood_q
 mood_query([]) :- (assert(mood(calm)), query_symptoms(_)).
 
 
-%this would determine how should the doctor treat the patient
+% #5.1(Main) Asserts the mood level
 confirm_mood(calm) :- assert(mood(calm)).
 confirm_mood(worried) :- assert(mood(worried)).
 confirm_mood(stressed) :- assert(mood(stressed)).
@@ -413,9 +413,9 @@ merge(bleed) :- (assert(has(bleed)), incr_bleed).
 %  For instance, both acne and cancer have the same symptom "lump". Which also mean that the symptom "lump" is not unique enough to identify a unique disease.
 % This also means that there's a chance that the counter for count_acne = X might also have the same value as the counter for count_cancer.
 % To resolve this, heavier weights are added to symptoms that tend to have a stronger indicator towards a particular disease.
-% (1) For non-unique symptoms, the increment weight is 1.
-% (2) For diseases with total unique symptoms > 2, the increment weight is 2.
-% (3) For diseases with total unique symptoms <=2, the increment weight is 3.
+% (1) For disease with non-unique symptoms, the increment weight is 1.
+% (2) For disease with total unique symptoms > 2, the increment weight is 2.
+% (3) For disease with total unique symptoms <=2, the increment weight is 3.
 % E.g. The unique / stronger indicator for cancer will be "bleed" and "pale_skin" since both symptoms do not overlap with antoher disease
 % And since the total unique symptoms are <=2, the increment_cancer weight for bleed and pale_skin will be 3 respectively.
 
