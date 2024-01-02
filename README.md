@@ -1,4 +1,4 @@
-CZ3005_AI
+CZ3005 Artifical Intellgience
 
 # Lab 1
 - DFS, BFS, A*
@@ -21,4 +21,4 @@ CZ3005_AI
   - It includes a sophisticated algorithm to diagnose over five different diseases, each identified by a unique set of five or more symptoms, ensuring sensitive and accurate patient assessment.
   - Integrated with Google's text-to-speech AI.
 ### Lab 4 Demo Video -- Sympathetic Doctor
-[![Sympathetic Docor](https://img.youtube.com/vi/IfDK-hPf6fs/default.jpg)](https://youtu.be/IfDK-hPf6fs)
+[<img src="https://img.youtube.com/vi/IfDK-hPf6fs/hqdefault.jpg" width="500" height="500"/>](https://youtu.be/IfDK-hPf6fs)
