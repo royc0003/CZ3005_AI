@@ -11,8 +11,7 @@ CZ3005_AI
 - Smart Phone Rivalry
 - The Royal Family
 
-# Lab 4
-- Sympathetic Doctor + GUI
+# Lab 4:  Sympathetic Doctor + GUI -- An Early Diagnostic Chatboot
 - Purpose:
   - To create a Knowledge-Based System (KBS) using first-order logic.
   - To create an empathetic diagnostic chatbot to help patients with early diagnosis.
